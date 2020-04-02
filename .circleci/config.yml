@@ -4,6 +4,8 @@ version: 2.1
 orbs:
   # Declare a dependency on the welcome-orb
   welcome: circleci/welcome-orb@0.4.1
+  clair-scanner: ovotech/clair-scanner@1.6.0
+  anchore-engine: anchore/anchore-engine@1.6.7  
 # Orchestrate or schedule a set of jobs
 workflows:
   # Name the workflow "welcome"
