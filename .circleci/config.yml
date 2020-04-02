@@ -1,107 +1,13 @@
-orbs:
-  anchore: anchore/anchore-engine@1.6.5
+# Use the latest 2.1 version of CircleCI pipeline process engine. See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
-
+# Use a package of configuration called an orb.
+orbs:
+  # Declare a dependency on the welcome-orb
+  welcome: circleci/welcome-orb@0.4.1
+# Orchestrate or schedule a set of jobs
 workflows:
-  scan_image:
+  # Name the workflow "welcome"
+  welcome:
+    # Run the welcome/run job in its own container
     jobs:
-      - anchore/image_scan:
-          image_name: 'docker.io/anchore/anchore-engine:latest'
-          policy_bundle_file_path: .circleci/.anchore/policy_bundle.json
-          timeout: '300'
-description: >
-  Performs a static security analysis of docker container with anchore engine.
-
-  A custom policy can be used for evaluation, add custom Anchore policy bundle
-
-  to .circleci/.anchore/policy_bundle.json in your repository. Anchore engine
-  pulls
-
-  image from public/private docker registries. Requires registry credentials
-
-  to access private images, use ENV vars $DOCKER_USER & $DOCKER_PASS
-executor: anchore_engine
-parameters:
-  after_analyze:
-    default: []
-    description: Optional steps to run after analyzing the docker image.
-    type: steps
-  after_checkout:
-    default: []
-    description: Optional steps to run after checking out the code.
-    type: steps
-  before_analyze:
-    default: []
-    description: Optional steps to run before analyzing the docker image.
-    type: steps
-  image_name:
-    description: 'Image repository & tag (eg - docker.io/anchore/anchore-engine:latest).'
-    type: string
-  policy_bundle_file_path:
-    default: '${HOME}/project/.circleci/.anchore/policy_bundle.json'
-    description: Specify file path to policy bundle.
-    type: string
-  policy_failure:
-    default: false
-    description: Set to True if pipeline should stop on policy evaluation status 'fail'.
-    type: boolean
-  private_registry:
-    default: false
-    description: Set to True if image is only accessible from a private registry.
-    type: boolean
-  registry_name:
-    default: docker.io
-    description: Name of private registry (eg - docker.io)
-    type: string
-  registry_pass:
-    default: $DOCKER_PASS
-    description: Password for private registry (use env var $DOCKER_PASS to populate).
-    type: string
-  registry_user:
-    default: $DOCKER_USER
-    description: Username for private registry (use env var $DOCKER_USER to populate).
-    type: string
-  timeout:
-    default: '300'
-    description: Timeout used for Anchore Engine image scanning.
-    type: string
-steps:
-  - setup_remote_docker:
-      docker_layer_caching: true
-  - checkout
-  - when:
-      condition: << parameters.after_checkout >>
-      name: Run after_checkout life cycle hook steps.
-      steps: << parameters.after_checkout >>
-  - start_engine
-  - when:
-      condition: << parameters.before_analyze >>
-      name: Run before_analyze life cycle hook steps.
-      steps: << parameters.before_analyze >>
-  - when:
-      condition: << parameters.private_registry >>
-      steps:
-        - add_private_registry:
-            registry_name: << parameters.registry_name >>
-            registry_pass: << parameters.registry_pass >>
-            registry_user: << parameters.registry_user >>
-  - analyze_image:
-      image_name: << parameters.image_name >>
-      timeout: << parameters.timeout >>
-  - when:
-      condition: << parameters.after_analyze >>
-      name: Run after_analyze life cycle hook steps.
-      steps: << parameters.after_analyze >>
-  - policy_evaluation:
-      image_name: << parameters.image_name >>
-      policy_bundle_file_path: << parameters.policy_bundle_file_path >>
-      policy_failure: << parameters.policy_failure >>
-  - parse_reports
-  - store_artifacts:
-      path: anchore-reports
- description: |
-  Docker stable image with ANCHORE_VERSION environment variable set.
-docker:
-  - image: 'docker:stable-git'
-environment:
-  ANCHORE_VERSION: v0.7.0
+      - welcome/run 
