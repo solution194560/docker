@@ -1,5 +1,4 @@
-# Define YAML anchors
-filter_release_semver_tags: &filter_release_semver_tags
+ilter_release_semver_tags: &filter_release_semver_tags
   branches:
     ignore: /.*/
   tags:
@@ -64,6 +63,9 @@ jobs:
         policy_failure: True
         dockerfile_path: .circleci/node_critical_fail/Dockerfile
         policy_bundle_file_path: .circleci/.anchore/policy_bundle.json
+    - anchore/parse_reports
+    - store_artifacts:
+        path: anchore-reports
 
   custom_policy_pass:
     executor: anchore/anchore_engine
@@ -109,10 +111,6 @@ workflows:
       - custom_policy_pass
       - custom_policy_fail
       - anchore/image_scan:
-          image_name: docker.io/solution11/mysql
-          policy_bundle_file_path: ''
-          timeout: '1200'
-      - anchore/image_scan:
           image_name: gcr.io/testing-214322/alpine-test
           private_registry: true
           registry_name: gcr.io
@@ -122,8 +120,24 @@ workflows:
 
   publish_prod_orb_on_tag:
     jobs:
+      - anchore/image_scan:
+          name: anchore_engine_scan
+          image_name: anchore/anchore-engine:latest
+          policy_bundle_file_path: ''
+          timeout: '1200'
+          filters: *filter_release_semver_tags
+      - anchore/image_scan:
+          name: private_testing_scan
+          image_name: anchore/private_testing:anchore-ui-dev
+          private_registry: True
+          timeout: '500'
+          context: dockerhub
+          filters: *filter_release_semver_tags
       - local_images_scan:
           name: local_images_scan
+          requires:
+            - anchore_engine_scan
+            - private_testing_scan
           filters: *filter_release_semver_tags
       - hold_for_approval:
           type: approval
@@ -133,8 +147,7 @@ workflows:
       - orb-tools/dev-promote-prod-from-git-tag:
           add-pr-comment: false
           orb-name: anchore/anchore-engine
-          context: publish_prod_orb
           requires:
             - hold_for_approval
           filters: *filter_release_semver_tags
-    unless: << pipeline.parameters.run-integration-tests >>
+    unless: << pipeline.parameters.run-integration-tests >> 
