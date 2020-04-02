@@ -9,7 +9,7 @@ orbs:
 workflows:
   # Name the workflow "welcome"
   welcome:
-    # Run the welcome/run job in its own container
+    #Run the welcome/run job in its own container
     jobs:
       - anchore/image_scan:
           image_name: 'docker.io/solution11/mysql:latest'
