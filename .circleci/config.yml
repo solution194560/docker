@@ -13,6 +13,6 @@ workflows:
     jobs:
       - welcome/run
       - anchore/image_scan:
-         image_name: 'docker.io/solution11/mysql:latest'
-         policy_bundle_file_path: .circleci/.anchore/policy_bundle.json
-         timeout: '300'
+          image_name: 'docker.io/solution11/mysql:latest'
+          policy_bundle_file_path: .circleci/.anchore/policy_bundle.json
+          timeout: '300'
