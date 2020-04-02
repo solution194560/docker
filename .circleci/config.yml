@@ -5,7 +5,7 @@ orbs:
   # Declare a dependency on the welcome-orb
   welcome: circleci/welcome-orb@0.4.1
   anchore: anchore/anchore-engine@1.6.5
-# Orchestrate or schedule a set of jobs
+#Orchestrate or schedule a set of jobs
 workflows:
   # Name the workflow "welcome"
   welcome:
