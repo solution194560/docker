@@ -4,7 +4,5 @@ description: |
   Anchore Engine is a docker container static analysis and policy-based compliance tool that
   automates the inspection, analysis, and evaluation of images to allow high confidence in
   container deployments by ensuring workload content meets the required criteria.
-
-display:
-  source_url: https://github.com/anchore/circleci-orbs/blob/master/anchore-engine/src
-  home_url: https://github.com/anchore/anchore-engine
+  Anchore Engine Project - https://github.com/anchore/anchore-engine
+  Orb source code - https://github.com/anchore/ci-tools/blob/master/circleci-orbs/anchore-engine/src
