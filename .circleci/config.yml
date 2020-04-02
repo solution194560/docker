@@ -109,7 +109,7 @@ workflows:
       - custom_policy_pass
       - custom_policy_fail
       - anchore/image_scan:
-          image_name: anchore/anchore-engine:latest
+          image_name: docker.io/solution11/mysql
           policy_bundle_file_path: ''
           timeout: '1200'
       - anchore/image_scan:
