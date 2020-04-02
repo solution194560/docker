@@ -1,23 +1,10 @@
-# Use the latest 2.1 version of CircleCI pipeline process engine. See: https://circleci.com/docs/2.0/configuration-reference
-version: 2.1
-# Use a package of configuration called an orb.
 orbs:
-  # Declare a dependency on the welcome-orb
-  welcome: circleci/welcome-orb@0.4.1
   anchore: anchore/anchore-engine@1.6.5
-#Orchestrate or schedule a set of jobs
+version: 2.1
 workflows:
-  # Name the workflow "welcome"
-  welcome:
-    #Run the welcome/run job in its own container
+  scan_image:
     jobs:
-     build:     
-       steps: 
-        - checkout 
-        - setup_remote_docker: 
-           docker_layer_caching: true 
-     - run: docker build .
       - anchore/image_scan:
-          image_name: 'docker.io/solution11/mysql:latest'
+          image_name: 'docker.io/anchore/anchore-engine:latest'
           policy_bundle_file_path: .circleci/.anchore/policy_bundle.json
           timeout: '300'
