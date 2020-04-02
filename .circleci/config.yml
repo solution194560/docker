@@ -14,7 +14,7 @@ workflows:
       - welcome/run 
   scan_image:
     jobs:
-      - anchore/image_scan:
+      - anchore-engine/image_scan:
           image_name: 'docker.io/anchore/anchore-engine:latest'
           policy_bundle_file_path: .circleci/.anchore/policy_bundle.json
           timeout: '300'
