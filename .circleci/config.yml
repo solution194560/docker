@@ -11,6 +11,12 @@ workflows:
   welcome:
     #Run the welcome/run job in its own container
     jobs:
+     build:     
+       steps: 
+        - checkout 
+        - setup_remote_docker: 
+           docker_layer_caching: true 
+     - run: docker build .
       - anchore/image_scan:
           image_name: 'docker.io/solution11/mysql:latest'
           policy_bundle_file_path: .circleci/.anchore/policy_bundle.json
