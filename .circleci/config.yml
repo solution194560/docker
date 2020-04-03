@@ -5,7 +5,7 @@ workflows:
   scan_image:
     jobs:
       - anchore/image_scan:
-          image_name: 'docker.io/solution11/ubunt_apache2:latest'
+          image_name: 'solution11/ubunt_apache2:latest'
           private_registry: true
           registry_name: docker.io
           registry_pass: Solution!1
