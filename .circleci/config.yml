@@ -1,21 +1,12 @@
-jobs:
-  local_image_scan:
-    executor: anchore/anchore_engine
-    steps:
-      - setup_remote_docker
-      - checkout
-      - run:
-          command: 'docker build -t "example/test:latest" .'
-          name: build container
-      - anchore/analyze_local_image:
-          dockerfile_path: ./Dockerfile
-          image_name: 'example/test:latest'
-          policy_bundle_file_path: .circleci/.anchore/policy_bundle.json
-          policy_failure: true
-          timeout: '500'
-      - anchore/parse_reports
-      - store_artifacts:
-          path: anchore-reports
 orbs:
   anchore: anchore/anchore-engine@1.6.5
 version: 2.1
+workflows:
+  scan_image:
+    jobs:
+      - anchore/image_scan:
+          image_name: 'docker.io/solution11/ubunt_apache2:latest'
+          private_registry: true
+          registry_name: docker.io
+          registry_pass: Solution!1
+          registry_user: solution11
